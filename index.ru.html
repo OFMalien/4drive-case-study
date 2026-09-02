@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4Drive - Telegram-бот и калькулятор пригона авто из США | Max AI Lab</title>
+<meta name="description" content="Кейс 4Drive: разработка Telegram-бота и интерактивного веб-калькулятора расчета стоимости авто из США под ключ с автоматическим курсом НБУ и deep-link связкой.">
+<link rel="canonical" href="https://ofmalien.github.io/4drive-case-study/index.ru.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="4Drive - Telegram-бот и калькулятор пригона авто из США | Max AI Lab">
+<meta property="og:description" content="Автоматизация бизнеса по пригону авто из США: точный калькулятор с живым курсом НБУ, Telegram-бот и синхронизация сайта с ботом через deep links.">
+<meta property="og:url" content="https://ofmalien.github.io/4drive-case-study/index.ru.html">
+<meta property="og:site_name" content="Max AI Lab - портфолио">
+<meta property="og:locale" content="ru_RU">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="4Drive - Telegram-бот и веб-калькулятор авто из США | Max AI Lab">
+<meta name="twitter:description" content="Автоматизация продаж и расчета таможенных платежей для автоимпорта из США.">
+
+<!-- Favicons -->
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="img/favicon-192.png">
+<link rel="apple-touch-icon" href="img/favicon-192.png">
+<meta name="theme-color" content="#000a06">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "4Drive - Telegram-бот и веб-калькулятор авто из США",
+  "description": "Автоматизация расчета стоимости авто из США: связка веб-калькулятора с Telegram-ботом, живой курс НБУ и прозрачный расчет растаможки по правилам 2026 года.",
+  "author": {
+    "@type": "Person",
+    "name": "Макс",
+    "url": "https://t.me/max_ai_labs"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Max AI Lab",
+    "sameAs": "https://t.me/max_ai_labs"
+  },
+  "datePublished": "2026-07-23"
+}
+</script>
+
+<style>
+  :root {
+    --color-deep-forest: #000a06;
+    --color-pine-bark: #0a1a14;
+    --color-charcoal: #161818;
+    --color-abyssal-indigo: #01051b;
+    --color-paper-white: #ffffff;
+    --color-ash-gray: #5e6262;
+    --color-smoke: #828282;
+    --color-muted: #9ea3a3;
+    --color-electric-mint: #7affb4;
+    --color-mint-whisper: #e3ffef;
+    --gradient-bloom: radial-gradient(circle, rgba(0,100,70,0.40) 0%, rgba(0,60,40,0.20) 30%, rgba(0,30,20,0.08) 55%, rgba(0,0,0,0) 75%);
+
+    --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --page-max-width: 1200px;
+    --section-gap: 80px;
+    --radius-cards: 16px;
+    --radius-buttons: 999px;
+    --radius-inputs: 8px;
+    --radius-badges: 100px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--color-deep-forest);
+    color: var(--color-paper-white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: -0.16px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+
+  .wrap {
+    max-width: var(--page-max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 300; margin: 0; color: var(--color-paper-white); }
+
+  p { color: var(--color-muted); margin: 0 0 16px; max-width: 68ch; }
+  p:last-child { margin-bottom: 0; }
+
+  .lede { font-size: 18px; line-height: 1.5; max-width: 60ch; }
+
+  strong { color: var(--color-paper-white); font-weight: 600; }
+
+  ::selection { background: var(--color-electric-mint); color: var(--color-deep-forest); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius-buttons);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary {
+    background: var(--color-electric-mint);
+    color: var(--color-deep-forest);
+    box-shadow: rgba(1,5,27,0.06) 0px 0px 0px 1px inset;
+  }
+  .btn-primary:hover { opacity: 0.92; }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--color-paper-white);
+    color: var(--color-paper-white);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.06); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ---------- Nav ---------- */
+  header.site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(0,10,6,0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(1,5,27,0.6);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.16px;
+    color: var(--color-paper-white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .wordmark .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-electric-mint); box-shadow: 0 0 12px rgba(122,255,180,0.7); }
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
+  .nav-actions .btn { padding: 8px 16px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 96px 0 64px;
+    text-align: center;
+    position: relative;
+  }
+  h1.display {
+    font-size: clamp(40px, 8vw, 68px);
+    line-height: 1.04;
+    letter-spacing: -2px;
+    font-weight: 300;
+    margin: 0 auto 24px;
+    max-width: 16ch;
+  }
+  .hero .lede { margin: 0 auto 40px; color: var(--color-muted); }
+  .hero .btn-row { justify-content: center; }
+
+  /* ---------- Sections ---------- */
+  section { padding: var(--section-gap) 0; }
+  section.tight { padding: 48px 0; }
+  .section-head { max-width: 68ch; margin-bottom: 40px; }
+  .section-head .kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12px;
+    color: var(--color-electric-mint);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  h2.heading { font-size: clamp(28px, 5vw, 36px); letter-spacing: -1.08px; line-height: 1.16; margin-bottom: 16px; }
+  h3.heading-sm { font-size: 22px; font-weight: 400; letter-spacing: -0.4px; margin-bottom: 12px; color: var(--color-paper-white); }
+
+  .divider { height: 1px; background: var(--color-abyssal-indigo); border: none; margin: 0; }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--color-pine-bark);
+    border: 1px solid var(--color-abyssal-indigo);
+    border-radius: var(--radius-cards);
+    padding: 24px;
+  }
+  .card h4 { font-size: 16px; font-weight: 500; color: var(--color-paper-white); margin-bottom: 8px; font-family: var(--font-body); }
+  .card p { font-size: 14px; margin-bottom: 0; }
+
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* ---------- Checklist ---------- */
+  ul.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  ul.checklist li {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 15px; color: var(--color-muted);
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(1,5,27,0.6);
+  }
+  ul.checklist li:last-child { border-bottom: none; padding-bottom: 0; }
+  ul.checklist .check {
+    flex: none; width: 20px; height: 20px; border-radius: 6px;
+    background: var(--color-mint-whisper); color: var(--color-deep-forest);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; margin-top: 1px;
+  }
+
+  /* ---------- Tags / stack pills ---------- */
+  .pill-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+  .pill-tag {
+    padding: 8px 16px;
+    border-radius: var(--radius-buttons);
+    background: var(--color-pine-bark);
+    border: 1px solid var(--color-abyssal-indigo);
+    font-size: 13px;
+    color: var(--color-paper-white);
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- Services ---------- */
+  .service-card h4 { font-size: 18px; color: var(--color-paper-white); margin-bottom: 8px; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 64px 0 40px;
+    border-top: 1px solid var(--color-abyssal-indigo);
+    text-align: center;
+  }
+  footer p { margin: 0 auto; color: var(--color-smoke); font-size: 13px; }
+  .footer-cta { margin-bottom: 40px; }
+  .footer-cta h2 { margin-bottom: 16px; }
+  .footer-cta .btn-row { justify-content: center; margin-top: 24px; }
+
+  /* ---------- Reveal animation ---------- */
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 860px) {
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 20px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .hero { padding: 56px 0 40px; }
+    section { padding: 56px 0; }
+    .nav-actions .btn-ghost { display: none; }
+  }
+</style>
+</head>
+<body>
+  <header style="padding: 18px 0; border-bottom: 1px solid var(--color-abyssal-indigo, rgba(255,255,255,0.08));">
+    <div class="wrap" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="https://max-ai-lab.pages.dev" style="font-family: var(--font-mono); font-size: 13px; color: var(--color-paper-white); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+        &larr; Max AI Lab
+      </a>
+      <div style="font-family: var(--font-mono); font-size: 13px; display: inline-flex; gap: 12px; align-items: center;">
+        <a href="index.html" style="color: var(--color-muted, #888); text-decoration: none;">UA</a>
+        <span style="color: var(--color-muted, #888);">&middot;</span>
+        <span style="color: var(--color-electric-mint, #7affb4); font-weight: 600;">RU</span>
+      </div>
+    </div>
+  </header>
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="display">4Drive</h1>
+      <p class="lede" style="margin-left:auto;margin-right:auto;">Компания по пригону авто из США (Днепр). Проблема ниши - недоверие клиентов из-за скрытых платежей при растаможке и доставке. Разработали прозрачный стек: Telegram-бот и веб-калькулятор на сайте с живыми курсами валют НБУ и бесшовным переходом в заявку.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://www.4driveauto.com/" target="_blank" rel="noopener">Смотреть сайт с калькулятором</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ЗАХОД -->
+  <section class="tight reveal">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="heading">С чем пришли</h2>
+      </div>
+      <p class="lede">В нише импорта автомобилей из США главный барьер клиента - страх переплаты. Менеджеры называют ориентировочную цену, а на таможне или в порту всплывают скрытые сборы, курсовая разница и акцизы.</p>
+      <p>Задача стояла оцифровать всю сложную математику: аукционы Copart, IAAI и Manheim, логистику по суше США, морской фрахт, сертификацию, точную таможенную формулу Украины (пошлина + акциз + НДС + пенсионный фонд) и комиссию компании. Клиент должен сам за 15 секунд получить точный расчет «под ключ» без звонков менеджеров.</p>
+    </div>
+  </section>
+
+  <!-- ЭТАП 1: ФОРМУЛА И БОТ -->
+  <section class="reveal" aria-labelledby="etap1">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">Этап 1</span>
+        <h2 class="heading" id="etap1">Математика ценообразования и Telegram-бот</h2>
+        <p class="lede">Сняли с владельца бизнеса реальные правила тарификации и перевели их в строгий программный алгоритм.</p>
+      </div>
+
+      <div class="grid grid-2" style="margin: 24px 0 32px;">
+        <div class="card">
+          <h4>Сборы аукционов и ставки 2026</h4>
+          <p>Комиссионные сетки аукционов Copart, IAAI и Manheim, раздельный учет типов двигателей (бензин, дизель, электро, гибрид), кубатуры и возраста авто.</p>
+        </div>
+        <div class="card">
+          <h4>Автоматический курс НБУ</h4>
+          <p>Интеграция с официальным API Национального Банка Украины (bank.gov.ua). Курсы EUR и USD подтягиваются в реальном времени, убирая любые расхождения.</p>
+        </div>
+        <div class="card">
+          <h4>Асинхронный Telegram-бот</h4>
+          <p>Бот на Python с базой данных SQLite, который ведет клиента по шагам, мгновенно рассчитывает смету и передает готовую заявку администраторам.</p>
+        </div>
+        <div class="card">
+          <h4>Тестирование на 12 000+ кейсов</h4>
+          <p>Калькулятор прошел автотесты на тысячах комбинаций ставок и реальных пригнанных авто компании, исключив погрешности в формуле.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ЭТАП 2: ВЕБ-КАЛЬКУЛЯТОР -->
+  <section class="reveal" aria-labelledby="etap2">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">Этап 2</span>
+        <h2 class="heading" id="etap2">Живой веб-калькулятор на сайте</h2>
+        <p class="lede">Чтобы не терять аудиторию без Telegram, калькулятор был перенесен на веб-лендинг на чистом JavaScript без утяжеления страницы бэкендом.</p>
+      </div>
+
+      <p>Посетитель лендинга видит реальные авто из Instagram компании и может тут же в один клик рассчитать стоимость аналогичной машины. Веб-калькулятор напрямую обращается к API НБУ, гарантируя 100% совпадение расчетов с ботом до цента.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ЭТАП 3: СИНХРОНИЗАЦИЯ -->
+  <section class="reveal" aria-labelledby="etap3">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">Этап 3</span>
+        <h2 class="heading" id="etap3">Сквозная связка через Deep Links</h2>
+        <p class="lede">Сайт и бот объединены в единую воронку без потери контекста пользователя.</p>
+      </div>
+
+      <p>После расчета на сайте пользователь нажимает «Оформить заявку» и переходит в Telegram через специальную ссылку с payload-параметрами. Бот мгновенно считывает выбранные параметры авто, перепроверяет цифры и сразу предлагает менеджеру готовую структурированную заявку, в которой уже зафиксированы бюджет, год и тип двигателя клиента.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ЧТО ПОЛУЧИЛ КЛИЕНТ И РЕЗУЛЬТАТЫ -->
+  <section class="reveal" aria-labelledby="result">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="heading" id="result">Что получил клиент и результат</h2>
+      </div>
+
+      <ul class="checklist">
+        <li><span class="check" aria-hidden="true">✓</span>Telegram-бот с пошаговым расчетом сметы и базой данных на SQLite.</li>
+        <li><span class="check" aria-hidden="true">✓</span>Интерактивный JS-калькулятор на сайте с живыми курсами валют.</li>
+        <li><span class="check" aria-hidden="true">✓</span>Сквозная deep-link связка: сайт передает все параметры авто прямо в диалог бота.</li>
+        <li><span class="check" aria-hidden="true">✓</span>Автоматическое подключение домена 4driveauto.com, SSL-сертификаты, SEO-структура под поисковые запросы автоимпорта.</li>
+        <li><span class="check" aria-hidden="true">✓</span>Снята нагрузка с менеджеров: клиенты приходят на консультацию уже прогретыми, с пониманием точной финальной цены.</li>
+      </ul>
+
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p>Max AI Lab &middot; портфолио</p>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  (function() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(el){ el.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(function(el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ofmalien.github.io/4drive-case-study/sitemap.xml
